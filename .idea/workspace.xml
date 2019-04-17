@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="c85152f3-20c2-4bbf-84bd-e15b742575a1" name="Default" comment="" />
+    <list default="true" id="c85152f3-20c2-4bbf-84bd-e15b742575a1" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -87,8 +89,8 @@
       <file leaf-file-name="lead_repository.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/api/repositories/lead_repository.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="259">
-              <caret line="58" column="41" selection-start-line="58" selection-start-column="40" selection-end-line="58" selection-end-column="41" />
+            <state relative-caret-position="124">
+              <caret line="70" column="8" selection-start-line="70" selection-start-column="8" selection-end-line="70" selection-end-column="8" />
               <folding>
                 <element signature="e#0#59#0" expanded="true" />
               </folding>
@@ -140,6 +142,9 @@
       <replace />
     </replaceStrings>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
@@ -187,8 +192,8 @@
         <option value="$PROJECT_DIR$/app/api/resources/__init__.py" />
         <option value="$PROJECT_DIR$/routes.py" />
         <option value="$PROJECT_DIR$/app/api/adapters/OutputAdapters/lead_output_adapter.py" />
-        <option value="$PROJECT_DIR$/app/api/repositories/lead_repository.py" />
         <option value="$PROJECT_DIR$/app/api/resources/lead_id.py" />
+        <option value="$PROJECT_DIR$/app/api/repositories/lead_repository.py" />
       </list>
     </option>
   </component>
@@ -201,12 +206,13 @@
   <component name="NodePackageJsonFileManager">
     <packageJsonPaths />
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds">
     <option name="x" value="716" />
-    <option name="y" value="-4" />
-    <option name="width" value="650" />
-    <option name="height" value="744" />
+    <option name="y" value="24" />
+    <option name="width" value="648" />
+    <option name="height" value="708" />
   </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
@@ -396,17 +402,16 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="64" y="-11" width="1303" height="780" extended-state="7" />
-    <editor active="true" />
+    <frame x="716" y="24" width="648" height="708" extended-state="0" />
     <layout>
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
       <window_info anchor="bottom" id="Database Changes" order="8" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Version Control" order="9" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Version Control" order="9" />
       <window_info anchor="bottom" id="Python Console" order="12" weight="0.3298791" />
       <window_info anchor="bottom" id="Run" order="2" />
-      <window_info anchor="bottom" id="Terminal" order="10" visible="true" weight="0.27682737" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.20478088" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="10" visible="true" weight="0.3084922" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.4269103" />
       <window_info anchor="bottom" id="Docker" order="11" show_stripe_button="false" />
       <window_info anchor="right" id="Database" order="3" />
       <window_info anchor="right" id="SciView" order="3" />
@@ -796,8 +801,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/api/repositories/lead_repository.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="259">
-          <caret line="58" column="41" selection-start-line="58" selection-start-column="40" selection-end-line="58" selection-end-column="41" />
+        <state relative-caret-position="124">
+          <caret line="70" column="8" selection-start-line="70" selection-start-column="8" selection-end-line="70" selection-end-column="8" />
           <folding>
             <element signature="e#0#59#0" expanded="true" />
           </folding>
