@@ -7,7 +7,7 @@ environment = config.get('ENVIRONMENT', 'environment')
 DB_PASSWORD = config.get('ENVIRONMENT', 'db_password')
 
 __local ={
-    'db_user': 'root',
+    'db_user': 'mananwadhwa4',
     'db_host': 'localhost',
     'db_name': 'leadmart',
     'phost': '127.0.0.1',

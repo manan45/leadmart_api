@@ -1,3 +1,3 @@
-def application(env, start_response):
-    start_response('200 OK', [('Content-Type', 'text/html')])
-    return ["Hello!"]
+from app import APP
+if __name__ == "__main__":
+	APP.run()
