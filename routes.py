@@ -9,6 +9,8 @@ endpoints = [
     (resources.UserId, '/user/<user_id>'),
     (resources.Lead, '/leads'),
     (resources.ApproveLead, '/<lead_id>/APPROVE'),
-    (resources.LeadId, '/leads/<lead_id>')
+    (resources.RejectLead, '/<lead_id>/REJECT'),
+    (resources.LeadId, '/leads/<lead_id>'),
+    (resources.LeadAction, '/leads/<action>')
 
 ]

@@ -4,6 +4,7 @@ from flask_login import LoginManager, current_user as _current_user
 import app.api
 from flask_script import Manager
 import json
+from flask_cors import CORS
 
 APP = Flask(__name__)
 
@@ -13,6 +14,7 @@ login_manager = LoginManager()
 login_manager.init_app(APP)
 
 current_user = _current_user
+CORS(APP)
 
 
 def get_current_user():

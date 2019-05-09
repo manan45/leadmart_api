@@ -15,3 +15,15 @@ class ApproveLead(Resource):
                 "message": "Lead Approved"
             }
         raise BadRequest("error occurred")
+
+
+class RejectLead(Resource):
+
+    def post(self, lead_id):
+        user_type = current_user.get_type()
+        lead_status = LeadRepository().reject_lead(lead_id, user_type)
+        if lead_status:
+            return {
+                "message": "Lead Rejected"
+            }
+        raise BadRequest("Error Occurred")
