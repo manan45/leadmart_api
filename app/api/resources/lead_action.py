@@ -18,7 +18,7 @@ class LeadAction(Resource):
             for lead in leads:
                 result.append(LeadOutputAdapter().parse(lead))
             return result
-        raise BadRequest("No leads found")
+        raise BadRequest("No lead found")
 
 
 

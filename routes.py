@@ -11,6 +11,6 @@ endpoints = [
     (resources.ApproveLead, '/<lead_id>/APPROVE'),
     (resources.RejectLead, '/<lead_id>/REJECT'),
     (resources.LeadId, '/leads/<lead_id>'),
-    (resources.LeadAction, '/leads/<action>')
+    (resources.LeadAction, '/lead/<action>')
 
 ]

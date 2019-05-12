@@ -2,6 +2,7 @@ from app.api.adapters.InputAdapters import LeadInputAdapter
 from app.api.models import User, Lead
 from werkzeug.exceptions import BadRequest
 from app import db
+from datetime import timedelta, datetime
 
 
 class LeadRepository(object):
@@ -66,7 +67,7 @@ class LeadRepository(object):
             lead = db.session.query(Lead).filter(Lead.id == lead_id).first()
             return lead
         else: 
-            lead = db.session.query(Lead).filter(Lead.id == lead_id, Lead.status == Lead.APPROVED).first()
+            lead = db.session.query(Lead).filter(Lead.id == lead_id, Lead.status == Lead.APPROVE).first()
             return lead
         
     def update_lead(self, parsed_lead, lead_id, user_id, user_type):
@@ -96,6 +97,80 @@ class LeadRepository(object):
                 db.session.rollback()
             return lead
         raise BadRequest("Lead not found")
+
+    def get_lead_by_action(self, action, user_id, user_type):
+        if action == Lead.ACTIONS['rejected']:
+            result = self.get_rejected_leads(user_type, user_id)
+        elif action == Lead.ACTIONS['active']:
+            result = self.get_active_leads(user_type, user_id)
+        elif action == Lead.ACTIONS['dead']:
+            result = self.get_dead_leads(user_type, user_id)
+        elif action == Lead.ACTIONS['submitted']:
+            result = self.get_submitted_leads(user_id)
+        else:
+            raise BadRequest('Action not Available')
+        return result
+    # todo pagination
+    def get_rejected_leads(self, user_type, user_id):
+        user = db.session.query(User).filter(User.id == user_id, User.type == user_type).first()
+        if user.type == int(User.TYPE['admin']) or user.type == int(User.TYPE['super_admin']):
+            rejected_leads = db.session.query(Lead).filter(Lead.status == Lead.REJECT).all()
+            result = []
+            if rejected_leads:
+                for rejected_lead in rejected_leads:
+                    result.append(rejected_lead)
+                return result
+        if user.type == int(User.TYPE['user']):
+            rejected_leads = db.session.query(Lead).filter(Lead.status == Lead.REJECT, Lead.user_id == user_id).all()
+            result = []
+            if rejected_leads:
+                for rejected_lead in rejected_leads:
+                    result.append(rejected_lead)
+                return result
+        raise BadRequest("No Lead Found")
+
+    # todo pagination
+    def get_active_leads(self, user_type, user_id):
+        user = db.session.query(User).filter(User.id == user_id, User.type == user_type).first()
+        if user.type == int(User.TYPE['admin']) or user.type == int(User.TYPE['super_admin']):
+            active_leads = db.session.query(Lead).filter(Lead.status == Lead.APPROVE).all()
+            result = []
+            if active_leads:
+                for active_lead in active_leads:
+                    result.append(active_lead)
+                return result
+        if user.type == int(User.TYPE['user']):
+            active_leads = db.session.query(Lead).filter(Lead.status == Lead.APPROVE, Lead.user_id == user_id).all()
+            result = []
+            if active_leads:
+                for active_lead in active_leads:
+                    result.append(active_lead)
+                return result
+        raise BadRequest("No Lead Found")
+
+    # todo pagination
+    def get_dead_leads(self, user_type, user_id):
+        user = db.session.query(User).filter(User.id == user_id, User.type == user_type).first()
+        if user.type == int(User.TYPE['user']):
+            dead_leads = db.session.query(Lead).filter(Lead.user_id == user_id).all()
+            result = []
+            if dead_leads:
+                for dead_lead in dead_leads:
+                    if datetime.now() >= dead_lead.created + timedelta(days=15):  # change the timings of the dead lead
+                        result.append(dead_lead)
+                return result
+        raise BadRequest("No Lead Found")
+
+    # todo pagination
+    def get_submitted_leads(self, user_id):
+        leads = db.session.query(Lead).filter(Lead.user_id == user_id).all()
+        result = []
+        if leads:
+            for lead in leads:
+                result.append(lead)
+            return result
+        raise BadRequest("No lead found")
+
 
 
 

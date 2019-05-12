@@ -5,12 +5,16 @@ from sqlalchemy.orm import relationship
 
 class Lead(db.Model):
 
-    APPROVED = '1'
-    REJECTED = '2'
+    APPROVE = '1'
+    REJECT = '2'
     IS_DELETED_TRUE = '1'
     IS_DELETED_FALSE = '2'
     IS_SOLD_TRUE = '1'
     IS_SOLD_FALSE = '2'
+    ACTIONS = {"rejected": "REJECTED",
+               "active": "ACTIVE",
+               "dead": "DEAD",
+               "submitted": "SUBMITTED"}
 
     __tablename__ = "leads"
 
@@ -23,7 +27,7 @@ class Lead(db.Model):
     price = Column(String(255))
     tag = Column(String(255))
     score = Column(String(244))
-    is_sold = Column(Integer, nullable=False, server_defualt=text("'2'"))
+    #is_sold = Column(Integer, nullable=False, server_defualt=text("'2'"))
     features = Column(String(255))
     status = Column(Integer, nullable=False, server_default=text("'2'"))
     is_deleted = Column(Integer, nullable=False, server_default=text("'2'"))
