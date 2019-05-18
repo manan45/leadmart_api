@@ -12,6 +12,7 @@ class LeadAction(Resource):
         # todo pagination
         user_id = current_user.get_id()
         user_type = current_user.get_type()
+        print(action)
         leads = LeadRepository().get_lead_by_action(action, user_id, user_type)
         result = []
         if leads:

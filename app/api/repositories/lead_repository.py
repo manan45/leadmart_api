@@ -1,5 +1,5 @@
 from app.api.adapters.InputAdapters import LeadInputAdapter
-from app.api.models import User, Lead
+from app.api.models import User, Lead, LeadSales
 from werkzeug.exceptions import BadRequest
 from app import db
 from datetime import timedelta, datetime
@@ -107,9 +107,14 @@ class LeadRepository(object):
             result = self.get_dead_leads(user_type, user_id)
         elif action == Lead.ACTIONS['submitted']:
             result = self.get_submitted_leads(user_id)
+        elif action == Lead.ACTIONS['sold']:
+            result = self.get_sold_leads(user_id)
+        elif action == Lead.ACTIONS['bought']:
+            result = self.get_bought_leads(user_id)
         else:
             raise BadRequest('Action not Available')
         return result
+
     # todo pagination
     def get_rejected_leads(self, user_type, user_id):
         user = db.session.query(User).filter(User.id == user_id, User.type == user_type).first()
@@ -170,6 +175,28 @@ class LeadRepository(object):
                 result.append(lead)
             return result
         raise BadRequest("No lead found")
+
+    # todo pagination
+    def get_sold_leads(self, user_id):
+        leads = db.session.query(LeadSales).filter(LeadSales.seller_id == user_id).all()
+        result = []
+        if leads:
+            for lead in leads:
+                result.append(lead.lead)
+            return result
+        raise BadRequest("No lead Found")
+
+    # todo pagination
+    def get_bought_leads(self, user_id):
+        leads = db.session.query(LeadSales).filter(LeadSales.buyer_id == user_id).all()
+        result = []
+        if leads:
+            for lead in leads:
+                result.append(lead.lead)
+            return result
+        raise BadRequest("No lead found")
+
+
 
 
 

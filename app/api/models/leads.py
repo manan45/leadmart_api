@@ -14,7 +14,9 @@ class Lead(db.Model):
     ACTIONS = {"rejected": "REJECTED",
                "active": "ACTIVE",
                "dead": "DEAD",
-               "submitted": "SUBMITTED"}
+               "submitted": "SUBMITTED",
+               "bought": "BOUGHT",
+               "sold": "SOLD"}
 
     __tablename__ = "leads"
 
