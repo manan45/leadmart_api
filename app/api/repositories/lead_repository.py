@@ -29,18 +29,17 @@ class LeadRepository(object):
             return lead
         raise BadRequest("error in adding lead ")
 
-    def get_lead_by_user_id(self, user_id, user_type):
+    def get_leads(self, user_type):
         #todo limit and offset
-        user = db.session.query(User).filter(User.id == user_id, User.type == user_type).first()
-        if user.type == int(User.TYPE['admin']) or user.type == int(User.TYPE['super_admin']):
+        if user_type == User.TYPE['admin'] or user_type == User.TYPE['super_admin']:
             leads = db.session.query(Lead).all() #todo distribute leads to different admin
             lead_details = []
             if leads:
                 for lead in leads:
                     lead_details.append(lead)
                 return lead_details
-        if user.type == int(User.TYPE['user']):
-            leads = db.session.query(Lead).filter(Lead.user_id == user_id, Lead.status == Lead.APPROVED).all() #todo limit and offset
+        else:
+            leads = db.session.query(Lead).filter(Lead.status == Lead.APPROVE).all() #todo limit and offset
             lead_details = []
             if leads:
                 for lead in leads:

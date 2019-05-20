@@ -18,11 +18,10 @@ class Lead(Resource):
             return LeadOutputAdapter().parse(lead)
         raise BadRequest("Error in adding lead")
 
-    @login_required
+    # todo get different types of leads
     def get(self):
-        user_id = current_user.get_id()
         user_type = current_user.get_type()
-        lead_details = LeadRepository().get_lead_by_user_id(user_id, user_type)
+        lead_details = LeadRepository().get_leads(user_type)
         details = []
         for lead_detail in lead_details:
             details.append(LeadOutputAdapter().parse(lead_detail))
