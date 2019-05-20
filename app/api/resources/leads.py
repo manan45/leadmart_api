@@ -20,8 +20,7 @@ class Lead(Resource):
 
     # todo get different types of leads
     def get(self):
-        user_type = current_user.get_type()
-        lead_details = LeadRepository().get_leads(user_type)
+        lead_details = LeadRepository().get_leads()
         details = []
         for lead_detail in lead_details:
             details.append(LeadOutputAdapter().parse(lead_detail))
