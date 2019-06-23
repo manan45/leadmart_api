@@ -14,7 +14,7 @@ class AdminRepository(object):
                 if admins:
                     for admin in admins:
                         peoples.append(admin)
-                    return users
+                    return peoples
                 raise BadRequest("No admin found")
             if type_of_user == 'USERS':
                 users = db.session.query(User).filter(User.type == User.TYPE['user'], User.is_blocked == User.IS_BLOCKED_FALSE).all()
@@ -92,6 +92,7 @@ class AdminRepository(object):
             raise BadRequest("User is not available")
         raise Unauthorized("You are not Authorised to access this url")
 
+    # todo pagination
     def get_leads_for_admin(self, user_id, user_type, action):
         if user_type == int(User.TYPE['admin']) or user_type == int(User.TYPE['super_admin']):
             results = []
