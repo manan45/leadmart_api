@@ -12,6 +12,7 @@ class UserLogin(db.Model):
     id = Column(BigInteger, primary_key=True)
     token = Column(Text)
     user_id = Column(BigInteger())
+    user_type = Column(Integer)
     is_active = Column(Integer, nullable=False, server_default=text("'0'"))
     created = Column(DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP"))
     updated = Column(DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"))

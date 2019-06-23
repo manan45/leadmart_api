@@ -11,7 +11,7 @@ class SendOtp(Resource):
         otp = UserRepository().send_otp(parsed_otp)
         if otp:
             return {
-                "message": "otp sent",
+                "message": "OTP Sent ",
                 "otp": otp.otp
             }
         raise BadRequest("Error Occurred")

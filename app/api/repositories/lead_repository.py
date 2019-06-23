@@ -1,6 +1,6 @@
 from app.api.adapters.InputAdapters import LeadInputAdapter
 from app.api.models import User, Lead, LeadSales
-from werkzeug.exceptions import BadRequest
+from werkzeug.exceptions import BadRequest, Unauthorized
 from app import db
 from datetime import timedelta, datetime
 
@@ -31,7 +31,7 @@ class LeadRepository(object):
 
     def get_leads(self):
         #todo limit and offset
-        leads = db.session.query(Lead).filter(Lead.status == Lead.APPROVE).all() #todo limit and offset
+        leads = db.session.query(Lead).filter(Lead.status == Lead.APPROVE, Lead.is_deleted == Lead.IS_DELETED_FALSE).all() #todo limit and offset
         lead_details = []
         if leads:
             for lead in leads:
@@ -40,10 +40,10 @@ class LeadRepository(object):
         raise BadRequest('No lead Found')
 
     def approve_lead(self, lead_id, user_type):
-        if user_type == User.TYPE['super_admin'] and user_type == User.TYPE['admin']:
-            lead = db.session.query(Lead).filter(Lead.id == lead_id).first()
+        if user_type == int(User.TYPE['super_admin']) or user_type == int(User.TYPE['admin']):
+            lead = db.session.query(Lead).filter(Lead.id == lead_id, Lead.status == Lead.REJECT, Lead.is_deleted == Lead.IS_DELETED_FALSE).first()
             if lead:
-                lead.status = Lead.APPROVED
+                lead.status = Lead.APPROVE
                 try:
                     db.session.add(lead)
                     db.session.commit()
@@ -51,7 +51,21 @@ class LeadRepository(object):
                     db.session.rollback()
                 return lead
             raise BadRequest("Lead Not Available")
-        return None
+        raise Unauthorized("You are not authorised to for this action")
+
+    def reject_lead(self, lead_id, user_type):
+        if user_type == int(User.TYPE['super_admin']) or user_type == int(User.TYPE['admin']):
+            lead = db.session.query(Lead).filter(Lead.id == lead_id, Lead.status == Lead.APPROVE, Lead.is_deleted == Lead.IS_DELETED_FALSE).first()
+            if lead:
+                lead.status = Lead.REJECT
+                try:
+                    db.session.add(lead)
+                    db.session.commit()
+                except:
+                    db.session.rollback()
+                return lead
+            raise BadRequest("Lead Not Available")
+        raise Unauthorized("You are not authorised to for this action")
 
     def get_lead_by_lead_id(self, lead_id, user_type):
         if user_type == int(User.TYPE['admin']) and user_type == int(User.TYPE['super_admin']):
@@ -186,6 +200,43 @@ class LeadRepository(object):
                 result.append(lead.lead)
             return result
         raise BadRequest("No lead found")
+
+    def delete_lead(self, user_id, user_type, lead_id):
+        lead = db.session.query(Lead).filter(Lead.user_id == user_id, Lead.id == lead_id, Lead.is_deleted == Lead.IS_DELETED_FALSE).first()
+        if lead and (user_type == int(User.TYPE['admin']) or user_type == int(User.TYPE['super_admin'])):
+            lead.is_deleted = Lead.IS_DELETED_TRUE
+            try:
+                db.session.add(lead)
+                db.session.commit()
+            except:
+                db.session.rollback()
+            return lead
+        elif user_type == int(User.TYPE['admin']) or user_type == int(User.TYPE['super_admin']):
+            lead = db.session.query(Lead).filter(Lead.id == lead_id, Lead.is_deleted == Lead.IS_DELETED_FALSE).first()
+            if lead:
+                lead.is_deleted = Lead.IS_DELETED_TRUE
+                try:
+                    db.session.add(lead)
+                    db.session.commit()
+                except:
+                    db.session.rollback()
+                return lead
+            raise BadRequest("No lead Found")
+        elif user_type == int(User.TYPE['user']):
+            lead = db.session.query(Lead).filter(Lead.user_id == user_id, Lead.id == lead_id,
+                                                 Lead.is_deleted == Lead.IS_DELETED_FALSE).first()
+            if lead:
+                lead.is_deleted = Lead.IS_DELETED_TRUE
+                try:
+                    db.session.add(lead)
+                    db.session.commit()
+                except:
+                    db.session.rollback()
+                return lead
+            raise BadRequest("No lead Found")
+        raise BadRequest("Error in deleting the lead")
+
+
 
 
 

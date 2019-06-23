@@ -19,6 +19,7 @@ class ApproveLead(Resource):
 
 class RejectLead(Resource):
 
+    @login_required
     def post(self, lead_id):
         user_type = current_user.get_type()
         lead_status = LeadRepository().reject_lead(lead_id, user_type)

@@ -16,12 +16,6 @@ class UserId(Resource):
             return UserOutputAdapter().parse(user)
         raise BadRequest("user details not available")
 
-
-    #TODO for admin
-    def delete(self):
-        pass
-
-
     @login_required
     def put(self, user_id):
         if user_id == "me":

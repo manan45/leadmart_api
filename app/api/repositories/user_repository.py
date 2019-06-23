@@ -5,6 +5,7 @@ from app.api.models import User, OTP, UserLogin
 from app.api.lib import StaticUtils
 import jwt, json, datetime, random, re, time
 from config import env
+import requests
 
 
 class UserRepository(object):
@@ -79,27 +80,39 @@ class UserRepository(object):
         except jwt.InvalidTokenError:
             return 'Invalid token. Please log in again.'
 
+    def sendPostRequest(self, reqUrl, apiKey, secretKey, useType, phoneNo, senderId, textMessage):
+        req_params = {
+            'apikey': apiKey,
+            'secret': secretKey,
+            'usetype': useType,
+            'phone': phoneNo,
+            'message': textMessage,
+            'senderid': senderId
+        }
+        return requests.post(reqUrl, req_params)
 
-    def send_otp(self, parsed_otp):
+    def send_otp(self, parsed_otp):  # parsed mobile
         otp = OTP()
+        generated_otp = self.generate_otp()
+
         if self.check_mobile(parsed_otp[OtpInputAdapter.MOBILE]):
             otp.mobile = parsed_otp[OtpInputAdapter.MOBILE]
-        otp.is_verified = OTP.IS_VERIFIED_FALSE
-        otp.otp = self.generate_otp()
-        try:
-            db.session.add(otp)
-            db.session.commit()
-        except:
-            db.session.rollback()
-
-        return otp
+            otp.is_verified = OTP.IS_VERIFIED_FALSE
+            otp.otp = generated_otp
+            try:
+                db.session.add(otp)
+                db.session.commit()
+            except:
+                db.session.rollback()
+            return otp
+        raise BadRequest("Failed to send otp")
 
     def generate_otp(self):
         otp = random.randint(0, 9999)
         return otp
 
     def get_unique_username_from_name(self, name):
-        # if name does not exist in db in username field then make that as a usename
+        # if name does not exist in db in username field then make that as a username
         name = StaticUtils.make_alpha_numeric_string(name)
         try:
             self.check_if_username_exists(name)
@@ -114,34 +127,39 @@ class UserRepository(object):
             mobile = StaticUtils.validate_mobile(parsed_login[LoginInputAdapter.MOBILE])
             if password and mobile:
                 hashed_password = StaticUtils.create_password_hash(password)
-                user = db.session.query(User).filter(User.mobile == mobile, User.password == hashed_password).first()
+                user = db.session.query(User).filter(User.mobile == mobile, User.password == hashed_password, User.is_blocked == User.IS_BLOCKED_FALSE).first()
                 if user:
                     user_login.user_id = user.id
                     user_login.is_active = UserLogin.IS_ACTIVE_TRUE
                     user_login.token = self.encode_auth_token(user)
+                    user_login.user_type = user.type
                     try:
                         db.session.add(user_login)
                         db.session.commit()
                     except:
                         db.session.rollback()
                     return user_login
-
+                raise BadRequest("User is blocked")
+            raise BadRequest("Mobile or password incorrect")
         elif self.check_argument(parsed_login[LoginInputAdapter.OTP]):
             user_login = UserLogin()
             mobile = StaticUtils.validate_mobile(parsed_login[LoginInputAdapter.MOBILE])
             otp_details = db.session.query(OTP).filter(OTP.mobile == mobile, OTP.otp == parsed_login[LoginInputAdapter.OTP],
                                                                                 OTP.is_verified == OTP.IS_VERIFIED_TRUE).first()
             if otp_details and mobile:
-                user = db.session.query(User).filter(User.mobile == parsed_login[LoginInputAdapter.MOBILE]).first()
-                user_login.user_id = self.get_user_from_mobile(parsed_login[LoginInputAdapter.MOBILE])
-                user_login.token = self.encode_auth_token(user)
-                user_login.is_active = UserLogin.IS_ACTIVE_TRUE
-                try:
-                    db.session.add(user_login)
-                    db.session.commit()
-                except:
-                    db.session.rollback()
-                return user_login
+                user = db.session.query(User).filter(User.mobile == parsed_login[LoginInputAdapter.MOBILE], User.is_blocked == User.IS_BLOCKED_FALSE).first()
+                if user:
+                    user_login.user_id = self.get_user_from_mobile(parsed_login[LoginInputAdapter.MOBILE])
+                    user_login.token = self.encode_auth_token(user)
+                    user_login.is_active = UserLogin.IS_ACTIVE_TRUE
+                    user_login.user_type = user.type
+                    try:
+                        db.session.add(user_login)
+                        db.session.commit()
+                    except:
+                        db.session.rollback()
+                    return user_login
+                raise BadRequest("user is blocked")
             raise BadRequest("Otp or Mobile is incorrect")
         raise BadRequest("error occurred")
 

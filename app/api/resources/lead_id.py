@@ -25,3 +25,14 @@ class LeadId(Resource):
         if lead:
             return LeadOutputAdapter().parse(lead)
         raise BadRequest('Error in updating lead')
+
+    @login_required
+    def delete(self, lead_id):
+        user_id = current_user.get_id()
+        user_type = current_user.get_type()
+        deleted_lead = LeadRepository().delete_lead(user_id, user_type, lead_id)
+        if deleted_lead:
+            return {
+                "message": "Lead Deleted Successfully"
+            }
+        raise BadRequest("Error Occurred")
